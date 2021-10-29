@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using TechJobsPersistent.Data;
 
 namespace TechJobsPersistent
 {
@@ -15,7 +16,7 @@ namespace TechJobsPersistent
     {
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            Configuration = configuration;           
         }
 
         public IConfiguration Configuration { get; }
@@ -24,6 +25,10 @@ namespace TechJobsPersistent
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddEntityFrameworkMySql();
+            services.AddSingleton<ConnectionString>(new ConnectionString(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddTransient<JobDbContext>();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

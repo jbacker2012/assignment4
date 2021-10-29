@@ -32,12 +32,41 @@ namespace TechJobsPersistent.Controllers
         [HttpGet("/Add")]
         public IActionResult AddJob()
         {
-            return View();
+            List<Employer> employers = context.Employers.ToList();
+            List<Skill> skills = context.Skills.ToList();
+
+            AddJobViewModel jobViewModel = new AddJobViewModel(employers, skills);
+            return View(jobViewModel);
         }
 
-        public IActionResult ProcessAddJobForm()
+        public IActionResult ProcessAddJobForm(AddJobViewModel viewModel, string [] selectedSkills)
         {
-            return View();
+
+            if (ModelState.IsValid)
+            {
+                Job jobObject;
+                jobObject = new Job (viewModel.Name);
+                foreach(string selectedSkill in selectedSkills)
+                {
+                    int num = int.Parse(selectedSkill);
+                    JobSkill jobSkill;
+                    jobSkill = new JobSkill();
+                    jobSkill.Job = jobObject;
+                    jobSkill.SkillId = num;
+                    context.Add(jobSkill);
+                }
+                jobObject.EmployerId = viewModel.EmployerId;
+                              
+                context.Add(jobObject);
+                context.SaveChanges();
+
+                return Redirect("/");
+            }
+            
+            viewModel.EmployerOptions = context.Employers.Select(employer => new SelectListItem(employer.Name, employer.Id.ToString())).ToList();
+            viewModel.SkillOptions = context.Skills.ToList();
+
+            return View("AddJob", viewModel);
         }
 
         public IActionResult Detail(int id)

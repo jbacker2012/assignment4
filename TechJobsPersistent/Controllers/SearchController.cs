@@ -47,6 +47,7 @@ namespace TechJobsPersistent.Controllers
                         .ToList();
 
                     JobDetailViewModel newDisplayJob = new JobDetailViewModel(job, jobSkills);
+                    
                     displayJobs.Add(newDisplayJob);
                 }
             }

@@ -1,10 +1,34 @@
-﻿<h1>Add a Job</h1>
+﻿@model AddJobViewModel
+<h1>Add a Job</h1>
 
 <form asp-controller="Home" asp-action="ProcessAddJobForm" method="post">
     <div class="form-group">
         <label>Name</label>
-        <input class="form-control" />
-        <span></span>
+        <input asp-for="@Model.Name" class ="form-control" />
+        <span asp-validation-for="Name"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Employers</label>
+        <select id="drpEmpList" class="form-control" asp-for="@Model.EmployerId" asp-items="@Model.EmployerOptions">
+            <option value="">--Select--</option>
+        </select>
+        <input type="hidden" asp-for="@Model.EmployerId" />
+        <span asp-validation-for="EmployerId"></span>
+        <br />
+        <a asp-controller="Employer" asp-action="Add">Click to Add new employer</a>
+    </div>
+
+    <div class="form-group">
+        <label>Job Skills</label>
+        <br />
+        @foreach (Skill skill in Model.SkillOptions)
+        {
+            <input type="checkbox" name="selectedSkills" value="@skill.Id" /> @skill.Name
+            <br />
+        }
+
+        <a asp-controller="Skill" asp-action="Add">Click to Add a new skill </a>
     </div>
 
     <input type="submit" value="Add Job" />
